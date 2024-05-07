@@ -53,6 +53,10 @@ describe("POST /books can create new books", function () {
     let response = await request(app).post("/books").send(testbook);
     expect(response.statusCode).toEqual(201);
     expect(response.body.book).toEqual(testbook);
+    // should have the book we created and the book that was already in database. A total of 2
+    const bookQuery = await request(app).get("/books");
+    expect(bookQuery.body.books).toHaveLength(2);
+    expect(bookQuery.body.books).toEqual([testbook, book]);
   });
   test("returns 400 error when scheme not meet", async function () {
     const response = await request(app).post(`/books`).send({
@@ -83,7 +87,9 @@ describe("PUT /books/:isbn can update books", function () {
       year: 2017,
     });
     expect(response.statusCode).toEqual(200);
-    expect(response.body).toEqual({
+
+    const bookQuery = await request(app).get("/books/0691161518");
+    expect(bookQuery.body).toEqual({
       book: {
         isbn: "0691161518",
         amazon_url: "http://a.co/eobPtX2",
