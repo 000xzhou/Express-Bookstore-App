@@ -5,6 +5,7 @@ const router = new express.Router();
 const jsonschema = require("jsonschema");
 const bookSchema = require("../schemas/bookSchema.json");
 const bookSchema_update = require("../schemas/bookSchema_update.json");
+const bookSchema_update_patch = require("../schemas/bookSchema_update_patch.json");
 const { error } = require("locus/src/print");
 
 /** GET / => {books: [book, ...]}  */
@@ -79,6 +80,24 @@ router.delete("/:isbn", async function (req, res, next) {
   try {
     await Book.remove(req.params.isbn);
     return res.json({ message: "Book deleted" });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/** PATCH /[isbn]   bookData => {book: updatedBook}  */
+
+router.patch("/:isbn", async function (req, res, next) {
+  try {
+    const result = jsonschema.validate(req.body, bookSchema_update_patch);
+
+    if (!result.valid) {
+      let listOfErrors = result.errors.map((error) => error.stack);
+      let error = new ExpressError(listOfErrors, 400);
+      return next(error);
+    }
+    const book = await Book.updatePatch(req.params.isbn, req.body);
+    return res.json({ book });
   } catch (err) {
     return next(err);
   }
