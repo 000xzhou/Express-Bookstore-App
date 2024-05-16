@@ -1,5 +1,3 @@
-\c bookstore
-
 CREATE TABLE books (
   isbn TEXT PRIMARY KEY,
   amazon_url TEXT,
