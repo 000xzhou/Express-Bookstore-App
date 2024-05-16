@@ -2,6 +2,6 @@
 
 const app = require("./app");
 
-app.listen(0, () => {
-  console.log(`Server starting on port 0`);
+app.listen(10000, () => {
+  console.log(`Server starting on port 10000`);
 });
