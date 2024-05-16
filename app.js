@@ -1,9 +1,11 @@
 /** Express app for bookstore. */
 
 const express = require("express");
+const cors = require("cors");
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 const ExpressError = require("./expressError");
 const bookRoutes = require("./routes/books");
